@@ -1,0 +1,12 @@
+.file-view {
+	height: 80%;
+	width: 80%;
+}
+.file-icon {
+	display: block;
+	height: 120px;
+	width: 100px;
+}
+.file-icon-img{height: 90px;width: 100%;background-size : 100px 90px;}
+.file-icon-name{height: 20px;width: 100%;}
+.file-icon-opt {height:10px;width: 10px;}

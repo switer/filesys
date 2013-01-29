@@ -1,0 +1,61 @@
+body {padding: 0;margin: 0;overflow: hidden;}
+.fs-disp-none {display:none!important;}
+.fs-view {
+	position: relative;margin:auto;
+	/*width: 100%;*/
+	height: 100%;
+	padding: 10px;
+	margin-bottom: 60px;
+	/*border:1px solid black;border-radius:5px;*/
+	overflow-y: auto;overflow-x: hidden;
+}
+.fs-bar {
+	position: fixed;
+	display: -webkit-box;
+	bottom: 0;
+	width: 100%;
+	height: 50px;
+	background-color: white;border-top: 1px solid #CCC;
+}
+.fs-bar-btn {
+	-webkit-box-flex:1;display: block;
+	text-decoration: none;line-height: 50px;
+	vertical-align: middle;color: black;
+}
+.fs-bar-icon {
+	width: 50px;
+	display: block;
+	background-image : url(./trash_icon.png);background-repeat: no-repeat;
+	background-size: 45px 45px;
+}
+.fs-bar .fs-bar-btn:first-child {text-align: left;padding-left: 10px}
+.fs-bar .fs-bar-btn:last-child {text-align: right;padding-right: 10px}
+.fs-icon {
+	display: -webkit-box;
+	width: 100%;height: 60px;
+	text-align: left;vertical-align: middle;text-decoration: none;
+	margin: 5px 0 5px 0;
+}
+.fs-icon-name {
+	display: block;
+	overflow:hidden; 
+	-webkit-box-flex:1;height: 100%;
+	height: 60px;line-height: 60px;
+	text-overflow: ellipsis;
+	font-family: 'YaHei';/*word-break: break-all;word-wrap: break-word;*/
+}
+.fs-icon-opt {
+	position: absolute;top: 0px;right: 0px;display: block;
+	height:30px;width: 30px;
+	padding: 0;outline: none;border: none;
+	position: initial;margin-top: 15px;
+	background-color: transparent;background-image : url(./delete_icon.png);background-repeat: no-repeat;background-size: 30px 30px;
+}
+.fs-icon-img{height: 60px;width: 60px;background-size : 60px 60px;}
+.fs-icon :hover {-webkit-box-shadow: 1px 1px 5px black;}
+.fs-icon-file .fs-icon-img {background-image : url(./file_icon.png);background-repeat: no-repeat;}
+.fs-icon-folder .fs-icon-img {background-image : url(./folder_icon.png);background-repeat: no-repeat;}
+
+.fs-theme-mac .fs-icon-file .fs-icon-img {background-image : url(./mac_file_icon.png);background-repeat: no-repeat;}
+.fs-theme-mac .fs-icon-folder .fs-icon-img {background-image : url(./mac_folder_icon.png);background-repeat: no-repeat;}
+.fs-theme-mac .fs-icon-back .fs-icon-img {background-image : url(./mac_back_icon.png);background-repeat: no-repeat;}

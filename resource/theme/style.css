@@ -1,0 +1,16 @@
+.file-view {
+	border:1px solid black;
+	overflow-y: auto;
+	border-radius:5px;
+}
+.file-icon {
+	text-align: center;
+	vertical-align: middle;
+	text-decoration: none;
+}
+.file-icon :hover {-webkit-box-shadow: 1px 1px 5px black;}
+.file-icon-file .file-icon-img {background-image : url(./file_icon.png);}
+.file-icon-folder .file-icon-img {background-image : url(./folder_icon.png);}
+.file-icon-name {font-family: 'YaHei';word-break: break-all;word-wrap: break-word;}
+.file-icon-opt {background-color: red;}
+
