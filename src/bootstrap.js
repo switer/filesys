@@ -1,6 +1,4 @@
 require(['webfs', 'when', 'util/notice', 'util/strRender'], function (wfs, when, notice, strRender) {
-
-
 	var webfs = wfs.webfs, webui = wfs.webui;
 	webui.renderRoot('#fileView', function () {
 		webui.initFileOperation('click', '#fileView');

@@ -150,9 +150,27 @@ define('webfs/fs',["when"], function (when) {
 	};
 });
 /**
+*	DOM Manual for webfs/ui
+**/
+define('webfs/ui/dom', function () {
+	var conf = {
+		'del_icon_sel' : '.fs-icon-opt',
+		'hide_class' : 'fs-disp-none',
+		'hiden_class' : ''
+	}
+	return {
+		'showDelIcon' : function (container) {
+			$(container).find(conf.del_icon_sel).css('visibility', 'visible');
+		},
+		'hideDelIcon' : function (container) {
+			$(container).find(conf.del_icon_sel).css('visibility', 'hidden');
+		}
+	}
+});
+/**
 *	UI of web.fs
 **/
-define('webfs/ui',['webfs/fs', 'util/strRender'], function (webfs, strRender) {
+define('webfs/ui',['webfs/fs', 'util/strRender', 'webfs/ui/dom'], function (webfs, strRender, webdom) {
 	var _this = this,
 		conf = {
 			'MAX_FILE_NAME_LENGTH' : 8
@@ -160,12 +178,18 @@ define('webfs/ui',['webfs/fs', 'util/strRender'], function (webfs, strRender) {
 	this._cwds = {};
 	this._root = '';
 	this._parentDerectories = {};
+	this._delIconVisi = {};
 
 	var  iconHtml = "<div data-type='@{fileType}' data-path='@{path}' data-event='icon-event' class='fs-icon @{iconType}' >"
 					+ "<div data-event='icon-event' class='fs-icon-img'></div>"
 				 	+ "<a data-event='icon-event' class='fs-icon-name'>@{name}</a>"
-				 	+ "<button data-event='icon-del' class='fs-icon-opt fs-disp-none'></button>"
+				 	+ "<button data-event='icon-del' class='fs-icon-opt @{visibleClass}'></button>"
 				 	+ "</div>";
+
+	var  backIconHtml = "<div data-type='@{fileType}' data-path='@{path}' data-event='icon-event' class='fs-icon @{iconType}' >"
+					  + "<div data-event='icon-event' class='fs-icon-img'></div>"
+				 	  + "<a data-event='icon-event' class='fs-icon-name'>@{name}</a>"
+				 	  + "</div>";
 
 	function setCwd (cwd, container) {
 		_this._cwds[container] = cwd;
@@ -222,9 +246,21 @@ define('webfs/ui',['webfs/fs', 'util/strRender'], function (webfs, strRender) {
 	}
 	function initShowDeleteIcon (eventType, container, selector) {
 		var handle = function () {
-			$('.sui-icon-opt', container).removeClass('fs-disp-none');
+			if ( _this._delIconVisi[container] )  {
+
+				_this._delIconVisi[container] = false;
+				webdom.hideDelIcon(container);
+			}
+			else {
+
+				_this._delIconVisi[container] = true;
+				webdom.showDelIcon(container);
+			}
+				
+
 		}
-		$(selector).on(eventType, handle);
+		$(document).on(eventType, selector, handle);
+
 	}
 	function initCreateDirectory (eventType, container , selector) {
 		var handle = function () {
@@ -265,7 +301,8 @@ define('webfs/ui',['webfs/fs', 'util/strRender'], function (webfs, strRender) {
 //					"name" : name.length > conf.MAX_FILE_NAME_LENGTH ? name.slice(0, conf.MAX_FILE_NAME_LENGTH) + '...' : name,
 					"name" : name,
 					"iconType" : iconType,
-					"path" : name
+					"path" : name,
+					"visibleClass" : _this._delIconVisi[container] ? '' : 'fs-visi-hide'
 				}, iconHtml);
 
 			$(container).append(html);
@@ -300,7 +337,7 @@ define('webfs/ui',['webfs/fs', 'util/strRender'], function (webfs, strRender) {
 		}, errorHanlder('UI:renderDirectorPath/FS:readPathAsDirectory:'))
 	}
 	function renderDirector (entries, container, callback) {
-		var html = "", iconContent;
+		var html = "", iconContent, parentPath;
 
 		if ( getCwd(container).toURL() !== _this._root ) {
 			html += strRender.replace({
@@ -308,7 +345,7 @@ define('webfs/ui',['webfs/fs', 'util/strRender'], function (webfs, strRender) {
 				"name" : '返回上一级',
 				"iconType" : 'fs-icon-back',
 				"path" : '..'
-			}, iconHtml)
+			}, backIconHtml);
 		}
 		_.each(entries, function (item) {
 
@@ -320,7 +357,8 @@ define('webfs/ui',['webfs/fs', 'util/strRender'], function (webfs, strRender) {
 //						"name" : name.length > conf.MAX_FILE_NAME_LENGTH ? name.slice(0, conf.MAX_FILE_NAME_LENGTH) + '...' : name,
 						"name" : name,
 						"iconType" : iconType,
-						"path" : name
+						"path" : name,
+						"visibleClass" : _this._delIconVisi[container] ? '' : 'fs-visi-hide'
 					}, iconHtml)
 
 			html += iconContent;
@@ -347,6 +385,7 @@ define('webfs/ui',['webfs/fs', 'util/strRender'], function (webfs, strRender) {
 		initShowDeleteIcon : initShowDeleteIcon
 	}
 });
+
 /**
 *
 **/
