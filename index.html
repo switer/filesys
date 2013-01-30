@@ -12,12 +12,13 @@
 <body>
 <div id="fileView" class="fs-view fs-theme-adobe"></div>
 <div id="fileBar" class="fs-bar">
-	<a id="addFoler" class="fs-bar-btn" href="javascript:;">创建目录</a>
-	<a id="showDeleteIcon" class="fs-bar-icon" href="javascript:;"></a>
-	<a id="addFile" class="fs-bar-btn" href="javascript:;" >新建文件</a>
+	<a id="addFoler" data-feed='true' class="fs-bar-btn" href="javascript:;">创建目录</a>
+	<a id="showDeleteIcon" data-feed='true' class="fs-bar-icon" href="javascript:;"></a>
+	<a id="addFile" data-feed='true' class="fs-bar-btn" href="javascript:;" >新建文件</a>
 </div>
 <script type="text/javascript" src="cordova-2.3.0.js"></script>
 <script type="text/javascript" src="./src/zepto.js"></script>
+<script type="text/javascript" src="./src/util/wfui.js"></script>
 <script data-main="./src/bootstrap" src="./src/require.js"></script>
 </body>
 </html>

@@ -1,12 +1,12 @@
-body {padding: 0;margin: 0;overflow: hidden;}
+body {padding: 0;margin: 0;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);}
 .fs-disp-none {display:none!important;}
 .fs-visi-hide {visibility: hidden;}
 .fs-view {
 	position: relative;margin:auto;
 	/*width: 100%;*/
 	height: 100%;
-	padding: 10px;
-	margin-bottom: 60px;
+	margin-top: 60px;
+	margin-bottom: 120px;
 	/*border:1px solid black;border-radius:5px;*/
 	overflow-y: auto;overflow-x: hidden;
 }
@@ -22,6 +22,7 @@ body {padding: 0;margin: 0;overflow: hidden;}
 	-webkit-box-flex:1;display: block;
 	text-decoration: none;line-height: 50px;
 	vertical-align: middle;color: black;
+	-webkit-transition: background-color 0.3s;
 }
 .fs-bar-icon {
 	width: 50px;
@@ -32,35 +33,53 @@ body {padding: 0;margin: 0;overflow: hidden;}
 .fs-bar .fs-bar-btn:first-child {text-align: left;padding-left: 10px}
 .fs-bar .fs-bar-btn:last-child {text-align: right;padding-right: 10px}
 .fs-icon {
-	display: -webkit-box;
+	display: -webkit-box;padding-left: 10px;
 	width: 100%;height: 60px;
 	text-align: left;vertical-align: middle;text-decoration: none;
-	margin: 5px 0 5px 0;
+	margin: 5px 0 5px 0;-webkit-transition: background-color 0.3s;
 }
 .fs-icon-name {
 	display: block;
 	overflow:hidden; 
-	-webkit-box-flex:1;height: 100%;
+	-webkit-box-flex:99;height: 100%;
 	height: 60px;line-height: 60px;
-	text-overflow: ellipsis;
+	text-overflow: ellipsis;text-indent: 1em;
 	font-family: 'YaHei';/*word-break: break-all;word-wrap: break-word;*/
 }
 .fs-icon-opt {
-	position: absolute;top: 0px;right: 0px;display: block;
+	display: block;margin-right: 20px;margin-top: 15px;-webkit-box-flex:1;
 	height:30px;width: 30px;
 	padding: 0;outline: none;border: none;
-	position: initial;margin-top: 15px;
 	background-color: transparent;background-image : url(./delete_icon.png);background-repeat: no-repeat;background-size: 30px 30px;
 }
-.fs-icon-img{height: 60px;width: 60px;background-size : 60px 60px;}
+.fs-icon-back {
+	position: fixed;top: 0px;margin: 0;
+	border-bottom: 1px solid #CCC;
+	background-color: white
+}
+.fs-icon-back .fs-icon-img{
+	background-image : url(./back_icon.png);background-repeat: no-repeat;
+}
+.fs-icon-back.fs-icon-root .fs-icon-img{
+	background-image : url(./root_icon.png);background-repeat: no-repeat;
+}
+.fs-icon-img{height: 60px;width: 60px;background-size : 60px 60px;background-image : url(./general_file_icon.png);background-repeat: no-repeat;}
 /*.fs-icon :hover {-webkit-box-shadow: 1px 1px 5px black;}*/
-.fs-icon-file .fs-icon-img {background-image : url(./file_icon.png);background-repeat: no-repeat;}
-.fs-icon-folder .fs-icon-img {background-image : url(./folder_icon.png);background-repeat: no-repeat;}
+/*.fs-icon-file .fs-icon-img {background-image : url(./file_icon.png);}*/
+.fs-icon-folder .fs-icon-img {background-image : url(./folder_icon.png);}
 
-.fs-theme-mac .fs-icon-file .fs-icon-img {background-image : url(./mac_file_icon.png);background-repeat: no-repeat;}
-.fs-theme-mac .fs-icon-folder .fs-icon-img {background-image : url(./mac_folder_icon.png);background-repeat: no-repeat;}
-.fs-theme-mac .fs-icon-back .fs-icon-img {background-image : url(./mac_back_icon.png);background-repeat: no-repeat;}
+/*Folder Theme*/
+.fs-theme-mac .fs-icon-folder .fs-icon-img {background-image : url(./mac_folder_icon.png);}
+.fs-theme-adobe .fs-icon-folder .fs-icon-img {background-image : url(./adobe_folder_icon.png);}
+.fs-theme-pure .fs-icon-folder .fs-icon-img {background-image : url(./pure_folder_icon.png);}
 
-.fs-theme-adobe .fs-icon-file .fs-icon-img {background-image : url(./adobe_file_icon.png);background-repeat: no-repeat;}
-.fs-theme-adobe .fs-icon-folder .fs-icon-img {background-image : url(./adobe_folder_icon.png);background-repeat: no-repeat;}
-.fs-theme-adobe .fs-icon-back .fs-icon-img {background-image : url(./back_icon.png);background-repeat: no-repeat;}
+/*FILE ICON*/
+.fs-icon-type-jpeg {background-image : url(./jpeg_file_icon.png);}
+.fs-icon-type-jpg {background-image : url(./jpeg_file_icon.png);}
+.fs-icon-type-png {background-image : url(./png_file_icon.png);}
+.fs-icon-type-txt {background-image : url(./txt_file_icon.png);}
+.fs-icon-type-html {background-image : url(./html_file_icon.png);}
+.fs-icon-type-mp3 {background-image : url(./mp3_file_icon.png);}
+.fs-icon-type-mp4 {background-image : url(./mp4_file_icon.png);}
+.fs-icon-type-pdf {background-image : url(./pdf_file_icon.png);}
+.fs-icon-type-general {}
