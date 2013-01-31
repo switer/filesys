@@ -8,16 +8,58 @@
 	<meta name="format-detection" content="telephone=no">
 	<script type="text/javascript" src="./src/underscore.js"></script>
 	<link rel="stylesheet" type="text/css" href="./resource/theme/ui.css">
+	<link rel="stylesheet" type="text/css" href="./resource/sui.css">
 </head>
 <body>
-<div id="fileView" class="fs-view fs-theme-adobe"></div>
+
+<div id="fileView" class="fs-view fs-theme-android"></div>
 <div id="fileBar" class="fs-bar">
-	<a id="addFoler" data-feed='true' class="fs-bar-btn" href="javascript:;">创建目录</a>
+	<a id="addFolder" data-feed='true' class="fs-bar-btn" href="javascript:;">创建目录</a>
 	<a id="showDeleteIcon" data-feed='true' class="fs-bar-icon" href="javascript:;"></a>
 	<a id="addFile" data-feed='true' class="fs-bar-btn" href="javascript:;" >新建文件</a>
 </div>
+<div class="sui-popbox sui-disp-none" data-vertical='center' data-position='fixed' data-transition=true data-cancel=true id="folderInpBox">
+	<div class="sui-popbox-mask sui-popbox-mask-slight"></div>
+	<div class="sui-popbox-box sui-popbox-white">
+		<div class="sui-popbox-content">
+			<div class="sui-inp-box sui-mg-top ">
+				<input class="sui-inp" type="text" id="folderInp" placeholder="输入目录名" />
+			</div>
+			<input class="sui-btn sui-w-full sui-mg-top sui-btn-primary" id="folderInpBtn" type="button" value="确定">
+		</div>
+	</div>
+</div>
+<div class="sui-popbox sui-disp-none" data-noscroll='true' data-vertical='center' data-position='fixed' data-transition=true data-cancel=true id="fileInpBox">
+
+	<div class="sui-popbox-mask sui-popbox-mask-slight"></div>
+	<div class="sui-popbox-box sui-popbox-white">
+		<div class="sui-popbox-content">
+			<div class="sui-inp-group sui-mg-top">
+				<div class="sui-inp-box">
+					<input class="sui-inp" type="text" id="fileNameInp"  placeholder="输入文件名" />
+				</div>
+				<div class="sui-inp-box">
+					<input class="sui-inp" type="text" id="fileSufInp" placeholder="输入文件类型" />
+				</div>
+				<div class="sui-inp-box">
+					<input class="sui-inp" type="text" id="fileContentInp" placeholder="输入文件内容" />
+				</div>
+			</div>
+			<input class="sui-btn sui-w-full sui-mg-top sui-btn-primary" id="fileInpBtn" type="button" value="确定">
+		</div>
+	</div>
+</div>
+<div class="sui-popbox sui-disp-none" data-vertical='center' data-position='fixed' data-transition=true data-cancel=true id="notifyBox">
+	<div class="sui-popbox-mask sui-popbox-mask-transparent"></div>
+	<div class="sui-popbox-box sui-popbox-black">
+		<div class="sui-popbox-content">
+			<center id="notifyMsg" class="sui-mg-top"></center>
+		</div>
+	</div>
+</div>
 <script type="text/javascript" src="cordova-2.3.0.js"></script>
 <script type="text/javascript" src="./src/zepto.js"></script>
+<script type="text/javascript" src="./src/sui.js"></script>
 <script type="text/javascript" src="./src/util/wfui.js"></script>
 <script data-main="./src/bootstrap" src="./src/require.js"></script>
 </body>
