@@ -274,7 +274,7 @@ define('webfs/ui',
 	}
 
 	//初始化文件的打开事件操作
-	function initFileOperation (eventType, container) {
+	function initFileOperation (eventType, container, error) {
 		var handle;
 		switch (eventType) {
 			case 'click':
@@ -288,7 +288,7 @@ define('webfs/ui',
 					if ($tar.data('event') !== "icon-event") return;
 					if ($parent.data('type') === 'directory') {
 						if ($parent.data('path') === '.') return;
-						renderDirectorPath($parent.data('path'), container);
+						renderDirectorPath($parent.data('path'), container, null, error);
 					} else {
 						try {
 							window.open(getCwd(container).toURL()+ '/' + $parent.data('path'),'view:file', 'resize=yes,scrollbar=yes,status=yes')
@@ -304,21 +304,8 @@ define('webfs/ui',
 		$(container).on(eventType, handle);
 	}
 
-	//显示删除按钮
-	function showDelStatus (container) {
-		if ( _this._delIconVisi[container] )  {
-
-			_this._delIconVisi[container] = false;
-			webdom.hideDelIcon(container);
-		}
-		else {
-			_this._delIconVisi[container] = true;
-			webdom.showDelIcon(container);
-		}
-	}
-
 	//删除文件的事件操作
-	function initIconDel (eventType, container ) {
+	function initIconDel (eventType, container, error) {
 
 		var delBtnSel = '.fs-icon-opt';
 
@@ -332,6 +319,7 @@ define('webfs/ui',
 			webfs[$parent.data('type') === 'file' ? 'unlink' : 'rmdir'](
 					$parent.data('path'), getCwd(container)
 					, function () {
+						
 						$parent.animate({
 						  "height" : 1,
 						  "opacity" : 0.1
@@ -343,13 +331,22 @@ define('webfs/ui',
 							}
 						});
 					}
-					, function (err) {
-						console.log('error : ' + webfs.errorCodeMap[err.code])
-					}
-				)
+					, errorHanlder(error))
 		}
 
 		$(container).on( eventType, delBtnSel, handle);
+	}
+	//显示删除按钮
+	function showDelStatus (container) {
+		if ( _this._delIconVisi[container] )  {
+
+			_this._delIconVisi[container] = false;
+			webdom.hideDelIcon(container);
+		}
+		else {
+			_this._delIconVisi[container] = true;
+			webdom.showDelIcon(container);
+		}
 	}
 	//创建一个目录
 	function mkdir (directoryname, container, success, error) {

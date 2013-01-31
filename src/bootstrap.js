@@ -7,8 +7,8 @@ require(['webfs', 'when', 'util/notice', 'util/strRender'], function (wfs, when,
 
 	webui.renderRoot(window.TEMPORARY, _this._container, function () {
 
-		webui.initFileOperation('click', _this._container);
-		webui.initIconDel('click', _this._container);
+		webui.initFileOperation('click', _this._container, errHandler);
+		webui.initIconDel('click', _this._container, errHandler);
 		initWebuiEvenet();
 	});
 	function msg (msg) {
