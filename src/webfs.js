@@ -1,42 +1,9 @@
+
+
 /**
-*	FileSystem of web.fs
+*	FileSystem APIS of web.fs
 **/
-define('webfs/fs/util', function () {
-	function urlParse (url) {
-		var path = [];
-		_.each(url.split('/'), function (item) {
-			if (item=='..') path.pop();
-			else if (item !== '.') path.push(item);
-		});
-		return path.join('/');
-	}
-	function suffix (filename) {
-		var namefrag = filename.toLowerCase().split('.'),
-			suf = namefrag.length > 1 ? namefrag.pop() : '';
-		return suf;
-	}
-	return {
-		"urlParse": urlParse,
-		"suffix" : suffix
-	}
-});
-/**
-*	DOM Manual for webfs/ui
-**/
-define('webfs/ui/dom', function () {
-	var conf = {
-		'del_icon_sel' : '.fs-icon-opt'
-	}
-	return {
-		'showDelIcon' : function (container) {
-			$(container).find(conf.del_icon_sel).css('visibility', 'visible');
-		},
-		'hideDelIcon' : function (container) {
-			$(container).find(conf.del_icon_sel).css('visibility', 'hidden');
-		}
-	}
-});
-define('webfs/fs',["when", 'webfs/fs/util'], function (when, util) {
+define('webfs/fs',['webfs/fs/util'], function (util) {
 
 	var _requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem,
 		Blob_Object = window.Blob;
@@ -59,6 +26,7 @@ define('webfs/fs',["when", 'webfs/fs/util'], function (when, util) {
 	_this._fsInstance = null;
 	_this._cacheDirectories = {};
 	//Peroperties
+	/*W3C File Error Code*/
 	var errorCodeMap = {
 			'1' : 'NOT_FOUND_ERR',
 			'2' : 'SECURITY_ERR',
@@ -72,48 +40,35 @@ define('webfs/fs',["when", 'webfs/fs/util'], function (when, util) {
 			'10' : 'QUOTA_EXCEEDED_ERR',
 			'11' : 'TYPE_MISMATCH_ERR'
 	},
-		phonegapErrorCodeMap = {
-			'1' : 'NOT_FOUND_ERR',
-			'2' : 'SECURITY_ERR',
-			'3' : 'ABORT_ERR',
-			'4' : 'NOT_READABLE_ERR',
-			'5' : 'ENCODING_ERR',
-			'6' : 'NO_MODIFICATION_ALLOWED_ERR',
-			'7' : 'INVALID_STATE_ERR',
-			'8' : 'SYNTAX_ERR',
-			'9' : 'INVALID_MODIFICATION_ERR',
-			'10' : 'QUOTA_EXCEEDED_ERR',
-			'11' : 'TYPE_MISMATCH_ERR',
-			'12' : 'PATH_EXISTS_ERR'
-		}
-	// var deffered = when.deffer();
-	/*Directory Cache*/
+	/*Phonegap File Error Code*/
+	phonegapErrorCodeMap = {
+		'1' : 'NOT_FOUND_ERR',
+		'2' : 'SECURITY_ERR',
+		'3' : 'ABORT_ERR',
+		'4' : 'NOT_READABLE_ERR',
+		'5' : 'ENCODING_ERR',
+		'6' : 'NO_MODIFICATION_ALLOWED_ERR',
+		'7' : 'INVALID_STATE_ERR',
+		'8' : 'SYNTAX_ERR',
+		'9' : 'INVALID_MODIFICATION_ERR',
+		'10' : 'QUOTA_EXCEEDED_ERR',
+		'11' : 'TYPE_MISMATCH_ERR',
+		'12' : 'PATH_EXISTS_ERR'
+	}
+	/*Directory Entry Cache*/
 	function cacheDirectory (directory, entries) {
 		_this._cacheDirectories[util.urlParse(directory.fullPath)] = entries;
 	}
+	/*Get A Directory Cache By Directory*/
 	function getCacheDirectory (directory) {
 		return _this._cacheDirectories[util.urlParse(directory.fullPath)];
 	}
+	/*Remove A Directory Cache By Directory*/
 	function removeCacheDirectory (directory) {
 		_this._cacheDirectories[util.urlParse(directory.fullPath)] = null;
 	}
-	function opendir (directory, success, error) {
-		if (directory.isDirectory) {
-			// if (getCacheDirectory(directory)) {
-			// 	success(getCacheDirectory(directory));
-			// 	return;
-			// }
-			directory.createReader({}).readEntries(function (entries) {
-				// cacheDirectory(directory, entries);
-				success(entries)
-			}, error);
-		}
-		else {
-			error && error("Not a directory entry !");
-		}
-	}
-	//##########################################################################
 
+	/*Public Method*/
 	//create a file
 	function link (filename, cwd, success, error) {
 		cwd.getFile(filename, config.CREATE_ENTRY_OPTIONS, success, error)
@@ -124,21 +79,21 @@ define('webfs/fs',["when", 'webfs/fs/util'], function (when, util) {
 	}
 	// delete a file
 	function unlink (filename, cwd, success, error) {
-		readfile(filename, cwd, function (file) {
+		openfile(filename, cwd, function (file) {
 			file.remove(success, error);
 		}, error);
 	}
 	// get a file
-	function readfile (filename, cwd, success, error) {
+	function openfile (filename, cwd, success, error) {
 		cwd.getFile(filename, config.READ_ENTRY_OPTIONS, success, error);
 	}
 	// get a directory
-	function readdir (directoryname, cwd, success , error ) {
+	function opendir (directoryname, cwd, success , error ) {
 		cwd.getDirectory(directoryname, config.READ_ENTRY_OPTIONS, success, error);
 	}
 	// remove a directory -r
 	function rmdir (directoryname, cwd, success, error) {
-		readdir(directoryname, cwd, function (directory) {
+		opendir(directoryname, cwd, function (directory) {
 			directory.removeRecursively(success, error);
 		}, error);
 	}
@@ -149,25 +104,24 @@ define('webfs/fs',["when", 'webfs/fs/util'], function (when, util) {
                 fileWriter.onwriteend = function(e) {
                     success(file);
                 };
-
                 fileWriter.onerror = function(e) {
                     error('Write failed: ' + e.toString());
                 };
                 try {
+                	//throw an error in mobile chrome or phonegap
                 	fileWriter.write(new Blob([content], {type: "text/plain;charset=UTF-8"}));
                 } catch (e) {
 					//Runing Good in Phonegap
 					fileWriter.write(content);
                 }
-
             }, error);
-
 		} , error);
 	}
 	/**
-	*	Open a dir . return entries
+	*	Open a dir 
+	*	@return entries
 	**/
-	function opendir (directory, success, error) {
+	function readdir (directory, success, error) {
 		if (directory.isDirectory) {
 			directory.createReader({}).readEntries(function (entries) {
 				success(entries)
@@ -180,7 +134,7 @@ define('webfs/fs',["when", 'webfs/fs/util'], function (when, util) {
 	/**
 	*	Open a file
 	**/
-	function openfile (file, encoding, success, error) {
+	function readfile (file, encoding, success, error) {
 
 		var reader = new FileReader();
 		if (file.isFile) {
@@ -232,8 +186,8 @@ define('webfs/fs',["when", 'webfs/fs/util'], function (when, util) {
 *	UI of web.fs
 **/
 define('webfs/ui', 
-		['webfs/fs', 'util/strRender', 'webfs/ui/dom', 'webfs/fs/util'], 
-			function (webfs, strRender, webdom, util) {
+		['webfs/fs', 'webfs/ui/dom', 'webfs/fs/util'], 
+			function (webfs, webdom, util) {
 				
 	var _this = {}, //custom scope
 
@@ -258,12 +212,15 @@ define('webfs/ui',
 				 	  + "<a data-event='icon-event' class='fs-icon-name'>@{name}</a>"
 				 	  + "</div>";
 
+	/*Set Current UI Work Directory*/
 	function setCwd (cwd, container) {
 		_this._cwds[container] = cwd;
 	}
+	/*Get Current UI Work Directory*/
 	function getCwd (container) {
 		return _this._cwds[container];
 	}
+	/*Handle Error in Common*/
 	function errorHanlder (error, msg) {
 		if (error) return error;
 		return function (e) {
@@ -272,8 +229,7 @@ define('webfs/ui',
 			else console.log('Error : ' + e.code);
 		}
 	}
-
-	//初始化文件的打开事件操作
+	/*初始化文件的打开事件操作*/
 	function initFileOperation (eventType, container, error) {
 		var handle;
 		switch (eventType) {
@@ -304,7 +260,7 @@ define('webfs/ui',
 		$(container).on(eventType, handle);
 	}
 
-	//删除文件的事件操作
+	/*删除文件的事件操作*/
 	function initIconDel (eventType, container, error) {
 
 		var delBtnSel = '.fs-icon-opt';
@@ -315,7 +271,7 @@ define('webfs/ui',
 				$parent = $optBtn.parent();
 
 			if ($optBtn.data('event') !== "icon-del") return;
-
+			// Delete A File Item DOM
 			webfs[$parent.data('type') === 'file' ? 'unlink' : 'rmdir'](
 					$parent.data('path'), getCwd(container)
 					, function () {
@@ -336,7 +292,7 @@ define('webfs/ui',
 
 		$(container).on( eventType, delBtnSel, handle);
 	}
-	//显示删除按钮
+	/*显示删除按钮*/
 	function showDelStatus (container) {
 		if ( _this._delIconVisi[container] )  {
 
@@ -348,14 +304,14 @@ define('webfs/ui',
 			webdom.showDelIcon(container);
 		}
 	}
-	//创建一个目录
+	/*创建一个目录*/
 	function mkdir (directoryname, container, success, error) {
 		webfs.mkdir(directoryname, getCwd(container), function (file) {
 			insertFileDOM(container, file);
 			success && success();
 		}, errorHanlder(error, 'UI:mkdir / FS:mkdir'));
 	}
-	//创建一个文件
+	/*创建一个文件*/
 	function writeFile (filename, content, container, success, error) {
 		webfs.writefile(filename, getCwd(container), content, function (file) {
 			insertFileDOM(container, file);
@@ -363,7 +319,7 @@ define('webfs/ui',
 			
 		}, errorHanlder(error, 'UI:writeFile / FS:writefile'));
 	}
-	//插入一个文件项目DOM
+	/*插入一个文件项目DOM*/
 	function insertFileDOM (container, file) {
 		document.body.scrollTop = document.body.scrollHeight;
 		var contElem = $(container)[0]
@@ -371,7 +327,7 @@ define('webfs/ui',
 			, iconType = file.isDirectory ? 'fs-icon-folder' : 'fs-icon-file'
 			, name = file.name
 			, iconClass = util.suffix(file.name).length > 0 && !file.isDirectory ? ' fs-icon-type-' + util.suffix(file.name) : ''
-			, html = strRender.replace({
+			, html = util.render({
 				"fileType" : fileType,
 				"name" : name,
 				"iconType" : iconType,
@@ -381,13 +337,13 @@ define('webfs/ui',
 			}, iconHtml);
 		$(container).append(html);
 	}
-	//渲染根目录API，也是webfs的启动函数
+	/*渲染根目录API，也是webfs的启动函数*/
 	function renderRoot(type, container, success, error) {
 		webfs.filesystem(type,
 			function(fs) {
 				_this._root = fs.root.toURL();
 				setCwd(fs.root, container);
-				webfs.opendir(fs.root, 
+				webfs.readdir(fs.root, 
 					function (entries) {
 						renderDirector(entries, container, success);
 					}
@@ -395,22 +351,22 @@ define('webfs/ui',
 			},
 		errorHanlder(error, 'UI:renderRoot / FS:filesystem'));
 	}
-	//渲染一个目录路径API，可用于打开子目录
+	/*渲染一个目录路径API，可用于打开子目录*/
 	function renderDirectorPath (path, container, success, error) {
 		if (path === getCwd(container).toURL()) path = './';
 		window.timeDate = new Date();
-		webfs.readdir(path, getCwd(container), function (entry) {
+		webfs.opendir(path, getCwd(container), function (entry) {
 			if (entry.isDirectory) {
 				setCwd(entry, container);
-				webfs.opendir(entry, 
+				webfs.readdir(entry, 
 					function(entries) {
 						renderDirector(entries, container, success);
 					},
-				errorHanlder(error, 'UI:renderDirectorPath / FS:opendir'));
+				errorHanlder(error, 'UI:renderDirectorPath / FS:readdir'));
 			}
-		}, errorHanlder(error, 'UI:renderDirectorPath / FS:readdir'))
+		}, errorHanlder(error, 'UI:renderDirectorPath / FS:opendir'))
 	}
-	//渲染目录
+	/*渲染目录*/
 	function renderDirector (entries, container, success) {
 		//render 目录前先把删除按钮状态设为隐藏
 		_this._delIconVisi[container] = false;
@@ -422,7 +378,8 @@ define('webfs/ui',
 			, rootpath
 			, iconType;
 
-		if ( util.urlParse(getCwd(container).toURL()) !== util.urlParse(_this._root)) {
+		/*目录项要指定渲染*/
+		if ( util.urlParse(getCwd(container).toURL()) !== util.urlParse(_this._root) ) {
 			rootname = '返回上一级';
 			rootpath = '..';
 			iconType = 'fs-icon-back';
@@ -432,7 +389,7 @@ define('webfs/ui',
 			rootpath = '.';
 			iconType = 'fs-icon-back fs-icon-root';
 		}
-		html += strRender.replace({
+		html += util.render({
 				"fileType" : 'directory',
 				"name" : rootname,
 				"iconType" : iconType,
@@ -444,31 +401,31 @@ define('webfs/ui',
 			var fileType = item.isDirectory ? 'directory' : 'file',
 				iconType = item.isDirectory ? 'fs-icon-folder' : 'fs-icon-file',
 				name = item.name,
+				//匹配文件类型的图片样式
 				iconClass = util.suffix(name).length > 0 && !item.isDirectory ? ' fs-icon-type-' + util.suffix(name) : '';
 
-			iconContent =  strRender.replace({
-						"fileType" : fileType,
-						"name" : name,
-						"iconType" : iconType,
-						"iconClass" : iconClass,
-						"path" : name,
-						"visibleClass" : _this._delIconVisi[container] ? '' : 'fs-visi-hide'
+			iconContent =  util.render({
+						"fileType" : fileType, //文件类型
+						"name" : name,//文件名
+						"iconType" : iconType,//图片类型
+						"iconClass" : iconClass,//图片样式Class
+						"path" : name,//文件路径
+						//指定删除是否可见
+						//TODO 可优化点
+						"visibleClass" : _this._delIconVisi[container] ? '' : 'fs-visi-hide' 
 					}, iconHtml)
 			html += iconContent;
 		});
 		$(container).html( html );
-		
 		success && success(entries);
 	}
 
-	//public methods
+	/*public methods*/
 	return {
 		//event
 		"initFileOperation" 	: initFileOperation,
-		// "initCreate" 			: initCreate,
-		// "initCreateDirectory" 	: initCreateDirectory,
 		"initIconDel" 			: initIconDel,
-		//render
+		//UI render
 		"renderRoot" 			: renderRoot,
 		"renderDirectorPath" 	: renderDirectorPath,
 		"renderDirector" 		: renderDirector,
@@ -478,13 +435,67 @@ define('webfs/ui',
 		"showDelStatus" 		: showDelStatus
 	}
 });
+/**
+*	web.fs util
+**/
+define('webfs/fs/util', function () {
+	/*解析替换URL中的.或..*/
+	function urlParse (url) {
+		var path = [];
+		_.each(url.split('/'), function (item) {
+			if (item=='..') path.pop();
+			else if (item !== '.') path.push(item);
+		});
+		return path.join('/');
+	}
+
+	/*获取文件的后缀名*/
+	function suffix (filename) {
+		var namefrag = filename.toLowerCase().split('.'),
+			suf = namefrag.length > 1 ? namefrag.pop() : '';
+		return suf;
+	}
+	/*模板渲染*/
+	function render (collection, str) {
+		var regs = [];
+		_.each(collection, function (item, key) {
+			regs.push({key : new RegExp('@\{' + key + '\}', 'g'), value: item});
+		})
+		for (var i = regs.length - 1; i >= 0; i--) {
+			str = str.replace(regs[i]['key'], regs[i]['value']);
+		};
+		return str;
+	}
+	return {
+		"urlParse": urlParse,
+		"suffix" : suffix,
+		"render" : render
+	}
+	
+});
+/**
+*	DOM Manual for webfs/ui
+**/
+define('webfs/ui/dom', function () {
+	var conf = {
+		'del_icon_sel' : '.fs-icon-opt'
+	}
+	return {
+		'showDelIcon' : function (container) {
+			$(container).find(conf.del_icon_sel).css('visibility', 'visible');
+		},
+		'hideDelIcon' : function (container) {
+			$(container).find(conf.del_icon_sel).css('visibility', 'hidden');
+		}
+	}
+});
 
 /**
-*	WE
+*	Web.fs Library
 **/
 define('webfs',['webfs/fs', 'webfs/ui'], function (webfs, webui) {
 	return {
-		'webfs' : webfs,
-		'webui' : webui
+		'webfs' : webfs, //封装的文件系统API库
+		'webui' : webui //文件系统UI API库
 	}
 });

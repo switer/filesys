@@ -1,14 +1,18 @@
 
-require(['webfs', 'when', 'util/notice', 'util/strRender'], function (wfs, when, notice, strRender) {
+
+/*App Bootstrap Demo*/
+require(['webfs'], function (wfs) {
 
 	var webfs = wfs.webfs, webui = wfs.webui, _this = {};
 
 	_this._container = '#fileView';
 
 	webui.renderRoot(window.TEMPORARY, _this._container, function () {
-
+		//文件的打开事件API
 		webui.initFileOperation('click', _this._container, errHandler);
+		//删除按钮的API
 		webui.initIconDel('click', _this._container, errHandler);
+		//APP Event
 		initWebuiEvenet();
 	});
 	function msg (msg) {
