@@ -6,6 +6,6 @@ function readAsBase64 (filename, writePath) {
 		filefrags = filefrags.splice(0, filefrags.length -1);
 		filefrags = filefrags.join('.')
 	}
-	fs.writeFileSync(filefrags + '.base64.js', 'var backIcon = "' + content + '"');
+	return content;
 }
 exports.readAsBase64 = readAsBase64;

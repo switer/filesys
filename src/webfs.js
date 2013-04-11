@@ -204,6 +204,7 @@ define('webfs/ui',
 					+ "<div data-event='icon-event' class='fs-icon-img @{iconClass}'></div>"
 				 	+ "<a data-event='icon-event' class='fs-icon-name'>@{name}</a>"
 				 	+ "<button data-event='icon-del' class='fs-icon-opt @{visibleClass}'></button>"
+				 	+ "<a class='fs-icon-download' download='@{name}' href='@{fullPath}'></a>"
 				 	+ "</div>";
 
 	// ROOT and Back Item HTML Template
@@ -333,7 +334,8 @@ define('webfs/ui',
 				"iconType" : iconType,
 				"iconClass" : iconClass,
 				"path" : name,
-				"visibleClass" : _this._delIconVisi[container] ? '' : 'fs-visi-hide'
+				"visibleClass" : _this._delIconVisi[container] ? '' : 'fs-visi-hide',
+				"fullPath" : file.toURL()
 			}, iconHtml);
 		$(container).append(html);
 	}
@@ -403,7 +405,6 @@ define('webfs/ui',
 				name = item.name,
 				//匹配文件类型的图片样式
 				iconClass = util.suffix(name).length > 0 && !item.isDirectory ? ' fs-icon-type-' + util.suffix(name) : '';
-
 			iconContent =  util.render({
 						"fileType" : fileType, //文件类型
 						"name" : name,//文件名
@@ -412,7 +413,8 @@ define('webfs/ui',
 						"path" : name,//文件路径
 						//指定删除是否可见
 						//TODO 可优化点
-						"visibleClass" : _this._delIconVisi[container] ? '' : 'fs-visi-hide' 
+						"visibleClass" : _this._delIconVisi[container] ? '' : 'fs-visi-hide',
+						"fullPath" : item.toURL()
 					}, iconHtml)
 			html += iconContent;
 		});

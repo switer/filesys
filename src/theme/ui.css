@@ -47,10 +47,16 @@ body {padding: 0;margin: 0;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);}
 	font-family: 'YaHei';/*word-break: break-all;word-wrap: break-word;*/
 }
 .fs-icon-opt {
-	display: block;margin-right: 20px;-webkit-box-flex:1;
+	display: block;margin-right: 0px;-webkit-box-flex:1;
 	height:100%;width: 30px;
 	padding: 0;outline: none;border: none;
 	background-color: transparent;background-position: center;background-image : url(./image/delete_icon.png);background-repeat: no-repeat;background-size: 30px 30px;
+}
+.fs-icon-download {
+	display: block;margin-right: 20px;-webkit-box-flex:1;
+	height:100%;width: 30px;
+	padding: 0;outline: none;border: none;
+	background-color: transparent;background-position: center;background-image : url(./image/download_icon.png);background-repeat: no-repeat;background-size: 30px 30px;
 }
 .fs-icon-back {
 	position: fixed;top: 0px;margin: 0;
