@@ -1,7 +1,7 @@
-web.fs.mobile
+filesys
 =============
 
-Mobile WEB FileSystem Base on HTML5 Technology <br />
+WEB FileSystem Base on HTML5 Filesystem apis <br />
 
 [Download Webfs App For Android](https://github.com/switer/resource/blob/master/org.apache.cordova.example.cordovaExample.apk)
 ##web.fs
